@@ -10,7 +10,7 @@ const Home = () => {
           新規登録は
           <Link
             href="/register"
-            className="text-sky-500 underline hover:text-sky-600"
+            className="text-sky-500 underline font-medium hover:text-sky-600"
           >
             こちらから
           </Link>

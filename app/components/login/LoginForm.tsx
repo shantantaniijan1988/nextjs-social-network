@@ -4,6 +4,8 @@ import { type FC } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { InputField } from "@/app/components/form/InputField";
 import { ButtonSubmit } from "@/app/components/form/ButtonSubmit";
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 interface LoginFormData {
   email: string;
@@ -14,7 +16,17 @@ export const LoginForm: FC = () => {
   const methods = useForm<LoginFormData>();
 
   const onSubmit = async (data: LoginFormData) => {
-    console.log(data);
+    try {
+      const response = await signIn("credentials", {
+        redirect: false,
+        email: data.email,
+        password: data.password,
+      });
+
+      console.log(response);
+    } catch (error) {
+      console.error("signin error:", error);
+    }
   };
 
   return (

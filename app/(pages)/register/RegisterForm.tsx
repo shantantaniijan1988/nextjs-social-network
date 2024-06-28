@@ -25,10 +25,12 @@ export const RegisterForm: FC = () => {
     resolver: zodResolver(registerFormSchema),
   });
   const [errorMessages, setErrorMessages] = useState<string[]>([]);
+  const [isPending, setIsPending] = useState(false);
   const router = useRouter();
 
   const onSubmit = async (data: RegisterFormData) => {
     setErrorMessages([]);
+    setIsPending(true);
 
     try {
       const response = await axios.post("/api/register", {
@@ -39,10 +41,12 @@ export const RegisterForm: FC = () => {
       if (response?.status === 201) {
         router.push("/");
         router.refresh();
+        setIsPending(false);
       }
     } catch (error: any) {
       const errors = Object.values(error.response.data).flat() as string[];
       setErrorMessages(errors);
+      setIsPending(false);
     }
   };
 
@@ -77,7 +81,7 @@ export const RegisterForm: FC = () => {
 
         {/* TODO: チェックボックスの実装 */}
 
-        <ButtonSubmit styles="mt-10" title="登録する" />
+        <ButtonSubmit styles="mt-10" title="登録する" isPending={isPending} />
       </form>
     </FormProvider>
   );

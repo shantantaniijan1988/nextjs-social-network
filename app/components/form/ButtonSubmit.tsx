@@ -24,14 +24,22 @@ export const ButtonSubmit: FC<Props> = ({
         type="submit"
         className={twMerge(
           clsx(
-            "w-full py-2 rounded bg-sky-500 text-white text-sm font-medium",
-            {}
+            "w-full py-2 rounded bg-sky-500 text-white text-sm font-medium flex items-center justify-center gap-x-1",
+            { "opacity-50": isPending }
           ),
           className
         )}
         {...buttonProps}
       >
-        {title}
+        {isPending && (
+          <span
+            className="
+          w-4 h-4 border-4 border-sky-700 rounded-full grid place-items-center relative
+          after:absolute after:w-4 after:h-4 after:border-transparent after:border-4 after:border-t-white after:border-r-white after:rounded-full after:animate-spin
+          "
+          ></span>
+        )}
+        <span>{title}</span>
       </button>
     </div>
   );

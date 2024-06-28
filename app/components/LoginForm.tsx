@@ -14,11 +14,14 @@ interface LoginFormData {
 
 export const LoginForm: FC = () => {
   const methods = useForm<LoginFormData>();
+  const [isPending, setIsPending] = useState(false);
   const [errorResponse, setErrorResponse] = useState<string>("");
   const router = useRouter();
 
   const onSubmit = async (data: LoginFormData) => {
     setErrorResponse("");
+
+    setIsPending(true);
 
     try {
       const response = await signIn("credentials", {
@@ -30,11 +33,14 @@ export const LoginForm: FC = () => {
       if (!response?.error) {
         router.push("/dashboard");
         router.refresh();
+        setIsPending(false);
       } else {
-        setErrorResponse("メールアドレスとパスワードを確認してください");
+        setErrorResponse("メールアドレスまたはパスワードを確認してください");
+        setIsPending(false);
       }
     } catch (error) {
       console.error("signin error:", error);
+      setIsPending(false);
     }
   };
 
@@ -54,7 +60,7 @@ export const LoginForm: FC = () => {
           id="password"
           label="パスワード"
         />
-        <ButtonSubmit styles="mt-10" title="ログイン" />
+        <ButtonSubmit styles="mt-10" title="ログイン" isPending={isPending} />
       </form>
     </FormProvider>
   );

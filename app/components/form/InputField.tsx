@@ -24,7 +24,7 @@ export const InputField: FC<Props> = ({ styles, id, type, label }) => {
         {...register(id)}
         type={type}
         id={id}
-        className="px-3 py-1.5 border border-gray-400 rounded font-bold focus:outline-sky-500"
+        className="px-3 py-1.5 border border-gray-400 rounded font-medium focus:outline-sky-500"
       />
       {errors[id]?.message && (
         <div>

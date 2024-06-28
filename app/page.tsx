@@ -1,5 +1,5 @@
 import { auth } from "@/auth";
-import { LoginForm } from "@/app/components/login/LoginForm";
+import { LoginForm } from "@/app/components/LoginForm";
 import Link from "next/link";
 
 const Home = async () => {

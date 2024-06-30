@@ -3,6 +3,18 @@ import { PrismaAdapter } from "@auth/prisma-adapter";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import prisma from "@/prisma/db";
+import { baseUserSchema } from "@/app/lib/baseUserSchema";
+
+const signInSchema = baseUserSchema.omit({ confirmPassword: true });
+
+const generateRandomKey = (length = 32) => {
+  const chars =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  return Array.from(
+    { length },
+    () => chars[Math.floor(Math.random() * chars.length)]
+  ).join("");
+};
 
 export const authConfig = {
   pages: {
@@ -14,11 +26,17 @@ export const authConfig = {
     authorized({ auth, request: { nextUrl } }) {
       const isLoggedIn = !!auth?.user;
       const paths = ["/dashboard", "/dev"];
+      const postAuthPaths = ["/register"];
       const isProtected = paths.some((path) =>
         nextUrl.pathname.startsWith(path)
       );
 
-      if (isLoggedIn && nextUrl.pathname.startsWith("/register")) {
+      console.log("middleware");
+
+      if (
+        isLoggedIn &&
+        postAuthPaths.some((path) => nextUrl.pathname.startsWith(path))
+      ) {
         const redirectUrl = new URL("/dashboard", nextUrl.origin);
         return Response.redirect(redirectUrl);
       }
@@ -65,9 +83,18 @@ export const authConfig = {
           return null;
         }
 
+        const validatedFields = signInSchema.safeParse({
+          email: credentials.email,
+          password: credentials.password,
+        });
+
+        if (!validatedFields.success) {
+          return null;
+        }
+
         const user = await prisma.user.findUnique({
           where: {
-            email: String(credentials.email),
+            email: validatedFields.data.email,
           },
         });
 
@@ -76,7 +103,7 @@ export const authConfig = {
         }
 
         const isPasswordMatch = await bcrypt.compare(
-          String(credentials.password),
+          validatedFields.data.password,
           user.password
         );
 
@@ -86,8 +113,7 @@ export const authConfig = {
 
         return {
           ...user,
-          randomKey:
-            "b4340ca1b988d151755f9a9b7feaf9a9e481799cb5a0e4f702bd82d2511b45d2",
+          randomKey: generateRandomKey(),
         };
       },
     }),

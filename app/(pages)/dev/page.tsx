@@ -1,9 +1,9 @@
-const DevBanner = () => {
+const Dev = () => {
   return (
     <div>
-      <h1 className="text-xl font-bold">DevBanner</h1>
+      <h1 className="text-xl font-bold">DeveloperTestPage</h1>
     </div>
   );
 };
 
-export default DevBanner;
+export default Dev;

@@ -20,7 +20,10 @@ export const authConfig = {
   pages: {
     signIn: "/",
   },
-  session: { strategy: "jwt" },
+  session: { strategy: "jwt", maxAge: 60 * 60 * 24 },
+  jwt: {
+    maxAge: 60 * 60 * 24,
+  },
   adapter: PrismaAdapter(prisma),
   callbacks: {
     authorized({ auth, request: { nextUrl } }) {
@@ -30,8 +33,6 @@ export const authConfig = {
       const isProtected = paths.some((path) =>
         nextUrl.pathname.startsWith(path)
       );
-
-      console.log("middleware");
 
       if (
         isLoggedIn &&

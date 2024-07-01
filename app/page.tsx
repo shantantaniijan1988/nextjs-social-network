@@ -6,8 +6,6 @@ const Home = async () => {
   const session = await auth();
   const user = session?.user;
 
-  console.log("@/app/pages.tsx:", user);
-
   return (
     <div>
       {user ? (

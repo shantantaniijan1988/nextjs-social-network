@@ -1,5 +1,5 @@
-import { Drawer } from "@/app/components/Drawer";
-import { auth, signOut } from "@/auth";
+import { NavigationDrawer } from "@/app/components/NavigationDrawer";
+import { auth } from "@/auth";
 import { type FC } from "react";
 import Link from "next/link";
 
@@ -8,11 +8,6 @@ export const Navigation: FC = async () => {
   const user = session?.user;
 
   const email = user?.email;
-
-  const logoutAction = async () => {
-    "use server";
-    await signOut();
-  };
 
   return (
     <header className="bg-white">
@@ -24,15 +19,7 @@ export const Navigation: FC = async () => {
         </nav>
         {user && (
           <div className="ml-auto flex items-center gap-x-8">
-            <Drawer email={email!}>
-              <form action={logoutAction}>
-                <div>
-                  <button type="submit" className="py-1 hover:underline">
-                    ログアウト
-                  </button>
-                </div>
-              </form>
-            </Drawer>
+            <NavigationDrawer email={email!} />
           </div>
         )}
       </div>
